@@ -3,9 +3,9 @@ from setuptools import setup
 
 
 setup(
-    name='participant-data-request',
+    name='dkany',
     version='0.0.1',
-    description='participant-data-request',
+    description='dkany',
     packages=find_packages('src'),
     package_dir={'': 'src'},
 )
