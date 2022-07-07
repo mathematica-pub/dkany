@@ -1,5 +1,5 @@
-# Simple Python Template
-This is a simple python template 
+# dkany
+Python package for accessing open data websites powered by dkan
 
 # Local Development
 
@@ -18,11 +18,6 @@ You can point pipenv to a specific python version manually by adding the --pytho
 pipenv install --dev --python C:/Users/pmariani/.pyenv/pyenv-win/versions/3.9.6/python.exe
 ```
 
-
-# Things to change from the template
-- file name under src
-- project name in setup.py
-- project prefix in branch 
 
 ## Environment Variables
  The default behavior of this app can be changed with environment variables.
