@@ -1,0 +1,168 @@
+import core.utils as utils
+import logging
+
+import requests
+from requests_toolbelt import sessions
+from requests.cookies import RequestsCookieJar
+from datetime import datetime as dt
+from copy import deepcopy as copy
+
+logger = logging.getLogger(__name__)
+
+
+class DKANClient(object):
+    """
+    docstring
+    """
+
+    def __init__(self, base_url=None, cookie_dict=None, user_name=None, password=None):
+        self.base_url = base_url
+
+        logger.info(f"Creating DKAN client for {self.base_url}")
+
+        session = sessions.BaseUrlSession(self.base_url)
+        # if user_name is not None:
+        #     session.auth = (user_name, password)
+
+        if cookie_dict is not None:
+            cookies = RequestsCookieJar()
+            cookies = requests.utils.add_dict_to_cookiejar(cookies, cookie_dict)
+            session.cookies = cookies
+
+        self.session = session
+
+        self.search_url = "api/1/search"
+        self.post_new_dataset_url = "api/1/metastore/schemas/dataset/items"
+        self.existing_dataset_url = (
+            "api/1/metastore/schemas/dataset/items/{dataset_identifier}"
+        )
+        self.query_datastore_url = (
+            "api/1/datastore/query/{dataset_identifier}/{datastore_idx}"
+        )
+        self.dkan_time_format = "%Y-%m-%dT%H:%M:%S"
+
+    def _process_response(self, response, acceptable_responses=[200, 201]):
+
+        if response.status_code not in acceptable_responses:
+            raise (BadResponse(response, acceptable_responses))
+        out = response.json()
+        return out
+
+    def _paged_search(self, params, page):
+        params["page"] = page
+
+        response = self.session.get(self.search_url, params=params)
+
+        return self._process_response(response)
+
+    def _search_all_pages(self, params):
+        page = 1
+        out = self._paged_search(params, page)
+        total = int(out["total"])
+        all_results = copy(out["results"])
+
+        if total > 0:
+            while len(all_results.keys()) < total:
+                page += 1
+                out = self._paged_search(params, page)
+                all_results.update(out["results"])
+
+        if all_results != []:
+            assert len(all_results.keys()) == total
+
+        return all_results
+
+    def search(self, title=None, tags=None, categories=None, page="ALL"):
+
+        params = {}
+        if title is not None:
+            params["title"] = title
+        if tags is not None:
+            params["keyword"] = tags
+        if categories is not None:
+            params["theme"] = categories
+
+        # Paging Logic
+        if page != "ALL":
+            out = self._paged_search(params, page)["results"]
+        else:
+            out = self._search_all_pages(params)
+
+        # search returns a dict if it finds something
+        # and and empty list if it does not find anything
+        # this is for type consistentcy
+        if out == []:
+            out = {}
+
+        return out
+
+    def filter_search_results(self, search_results, filter_params):
+
+        if filter_params is None:
+            return search_results
+        if len(filter_params.keys()) == 0:
+            return search_results
+
+        inital_search_results = list(search_results.items())
+
+        for search_key, search_result_value in inital_search_results:
+            for filter_key, filter_value in filter_params.items():
+                if search_result_value[filter_key] != filter_value:
+                    search_results.pop(search_key)
+                    break
+
+        return search_results
+
+    def create_dataset(self, body):
+        response = self.session.post(self.post_new_dataset_url, json=body)
+        return self._process_response(response)
+
+    def delete_dataset(self, dataset_identifier):
+        response = self.session.delete(
+            self.existing_dataset_url.format(dataset_identifier=dataset_identifier)
+        )
+        return self._process_response(response)
+
+    def update_dataset(self, dataset_identifier, body):
+        response = self.session.put(
+            self.existing_dataset_url.format(dataset_identifier=dataset_identifier),
+            json=body,
+        )
+        return self._process_response(response)
+
+    def get_dataset_metadata(self, dataset_identifier):
+        response = self.session.get(
+            self.existing_dataset_url.format(dataset_identifier=dataset_identifier),
+            params={'_format':"json"}
+        )
+        return self._process_response(response)
+
+    def check_dataset_exists(self, dataset_identifier):
+        try:
+            dataset_metadata = self.get_dataset_metadata(dataset_identifier)
+            return True
+        except BadResponse:
+            return False
+
+    def trigger_dataset_reimport(self, dataset_identifier):
+        body = self.get_dataset_metadata(dataset_identifier)
+        body["modified"] = dt.now().strftime(self.dkan_time_format)
+        return self.update_dataset(dataset_identifier, body)
+
+    def get_full_query_url(self, dataset_identifier, datastore_idx=0):
+        return utils.url_join(
+            [
+                self.base_url,
+                self.query_datastore_url.format(
+                    dataset_identifier=dataset_identifier, datastore_idx=datastore_idx
+                ),
+            ]
+        )
+
+    def get_data_by_dataset_identifier(self, dataset_identifier, datastore_idx=0):
+        response = self.session.get(
+            self.query_datastore_url.format(
+                dataset_identifier=dataset_identifier, datastore_idx=datastore_idx
+            )
+        )
+        return self._process_response(response)
