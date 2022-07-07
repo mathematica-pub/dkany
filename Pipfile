@@ -6,6 +6,9 @@ name = "pypi"
 [packages]
 pandas = "*"
 pyyaml = "*"
+requests = "*"
+requests-toolbelt= "*"
+dkany =  {editable = true, path = "."}
 
 
 [dev-packages]
@@ -13,6 +16,7 @@ pytest = "*"
 pytest-cov = "*"
 pytest-html = "*"
 jupyter = "*"
+luigi = "*"
 
 [requires]
 python_version = "3.8"
