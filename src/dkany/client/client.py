@@ -16,14 +16,21 @@ class DKANClient(object):
     docstring
     """
 
-    def __init__(self, base_url=None, cookie_dict=None, user_name=None, password=None):
+    def __init__(
+            self, 
+            base_url=None, 
+            cookie_dict=None, 
+            user_name=None, 
+            password=None
+        ):
+
         self.base_url = base_url
 
         logger.info(f"Creating DKAN client for {self.base_url}")
 
         session = sessions.BaseUrlSession(self.base_url)
-        # if user_name is not None:
-        #     session.auth = (user_name, password)
+        if user_name is not None:
+             session.auth = (user_name, password)
 
         if cookie_dict is not None:
             cookies = RequestsCookieJar()
@@ -36,6 +43,9 @@ class DKANClient(object):
         self.post_new_dataset_url = "api/1/metastore/schemas/dataset/items"
         self.existing_dataset_url = (
             "api/1/metastore/schemas/dataset/items/{dataset_identifier}"
+        )
+        self.revise_dataset_url = (
+            "api/1/metastore/schemas/dataset/items/{dataset_identifier}/revisions"
         )
         self.query_datastore_url = (
             "api/1/datastore/query/{dataset_identifier}/{datastore_idx}"
@@ -128,6 +138,13 @@ class DKANClient(object):
         response = self.session.put(
             self.existing_dataset_url.format(dataset_identifier=dataset_identifier),
             json=body,
+        )
+        return self._process_response(response)
+
+    def revise_dataset(self, dataset_identifier, body):
+        response = self.session.post(
+            self.revise_dataset_url.format(dataset_identifier=dataset_identifier),
+            json=body
         )
         return self._process_response(response)
 
