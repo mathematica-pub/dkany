@@ -1,11 +1,12 @@
-import core.utils as utils
 import logging
-
 import requests
 from requests_toolbelt import sessions
 from requests.cookies import RequestsCookieJar
 from datetime import datetime as dt
 from copy import deepcopy as copy
+
+import dkany.utils as utils
+from dkany.client.errors import BadResponse
 
 logger = logging.getLogger(__name__)
 
