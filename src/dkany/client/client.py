@@ -4,11 +4,12 @@ from requests_toolbelt import sessions
 from requests.cookies import RequestsCookieJar
 from datetime import datetime as dt
 from copy import deepcopy as copy
-
-import dkany.utils as utils
 from dkany.client.errors import BadResponse
 
 logger = logging.getLogger(__name__)
+
+def url_join(url_part_list):
+    return "/".join(url_part_list)
 
 
 class DKANClient(object):
@@ -168,7 +169,7 @@ class DKANClient(object):
         return self.update_dataset(dataset_identifier, body)
 
     def get_full_query_url(self, dataset_identifier, datastore_idx=0):
-        return utils.url_join(
+        return url_join(
             [
                 self.base_url,
                 self.query_datastore_url.format(

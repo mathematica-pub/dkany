@@ -18,5 +18,3 @@ pytest-html = "*"
 jupyter = "*"
 luigi = "*"
 
-[requires]
-python_version = "3.8"
