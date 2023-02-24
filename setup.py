@@ -8,4 +8,9 @@ setup(
     description='dkany',
     packages=find_packages('src'),
     package_dir={'': 'src'},
+    install_requires = [
+        'pandas',
+        'requests',
+        'requests-toolbelt'
+    ]
 )

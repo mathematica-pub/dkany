@@ -4,10 +4,6 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pandas = "*"
-pyyaml = "*"
-requests = "*"
-requests-toolbelt= "*"
 dkany =  {editable = true, path = "."}
 
 
