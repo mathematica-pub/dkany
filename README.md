@@ -31,3 +31,6 @@ There are many ways to run the tests associated with this app.
 1. Probably the easiest is to run the tests in vscode's testing pannel
 
 2. You can also run the tests from bash with `source scripts/test.sh` 
+
+
+# Ideas for Improvement

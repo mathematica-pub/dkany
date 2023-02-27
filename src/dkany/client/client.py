@@ -53,6 +53,12 @@ class DKANClient(object):
         )
         self.dkan_time_format = "%Y-%m-%dT%H:%M:%S"
 
+    def __repr__(self) -> str:
+        return f"DKAN client for {self.base_url} with user {self.user_name}"
+    
+    def __str__(self) -> str:
+        return f"DKAN client for {self.base_url} with user {self.user_name}"
+
     def _process_response(self, response, acceptable_responses=[200, 201]):
 
         if response.status_code not in acceptable_responses:
