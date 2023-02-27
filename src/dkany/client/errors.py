@@ -19,6 +19,7 @@ class BadResponse(Error):
         message.append(
             f"Returned: {status_code}:{response.reason}, Acceptable Codes {acceptable_status_codes}"
         )
+        message.append(response)
 
         self.response = response
         self.message = "\n".join(message)

@@ -1,10 +1,10 @@
 from setuptools import find_packages
 from setuptools import setup
 
-
+# TODO force the version to be consistent with git tag
 setup(
     name='dkany',
-    version='0.0.1',
+    version='0.0.4',
     description='dkany',
     packages=find_packages('src'),
     package_dir={'': 'src'},
