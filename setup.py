@@ -5,8 +5,8 @@ import os
 
 # TODO force the version to be consistent with git tag
 setup(
-    name='0.0.6',
-    version=os.environ['DKANY_VERSION'],
+    name='dkany',
+    version="0.0.7",
     description='dkany',
     packages=find_packages('src'),
     package_dir={'': 'src'},
