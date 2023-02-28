@@ -4,8 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-dkany =  {editable = true, path = "."}
-
+dkany = {editable = true, path = "."}
 
 [dev-packages]
 pytest = "*"
@@ -13,4 +12,3 @@ pytest-cov = "*"
 pytest-html = "*"
 jupyter = "*"
 luigi = "*"
-
