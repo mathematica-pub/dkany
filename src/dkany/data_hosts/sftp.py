@@ -7,11 +7,10 @@ class SftpClient(object):
             username=None,
             private_key_file=None,
             private_key_pass=None,
-            remote_working_dir=None,
+            default_remote_path=None,
             hostkeys=None
         ):
         
-        self.remote_working_dir = remote_working_dir
         cnopts = pysftp.CnOpts()
         # Attempted to get a valid hostkey from Akamai with a waka ticket,
         # but because of details of their setup it seems like it might not be possible
@@ -23,5 +22,6 @@ class SftpClient(object):
             username,
             private_key=private_key_file,
             private_key_pass=private_key_pass,
+            default_path=default_remote_path,
             cnopts = cnopts
         )

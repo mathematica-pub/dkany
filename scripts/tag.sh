@@ -1,4 +1,4 @@
-DKANY_VERSION='0.0.9'
+DKANY_VERSION=$(pipenv run python ./setup.py --version)
 version="v${DKANY_VERSION}"
 echo "Tagging "$DKANY_VERSION
 git tag $version
