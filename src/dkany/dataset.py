@@ -1,9 +1,5 @@
-import core.utils as utils
-import logging
 
-import requests
-from requests_toolbelt import sessions
-from requests.cookies import RequestsCookieJar
+import logging
 from datetime import datetime as dt
 from copy import deepcopy as copy
 
