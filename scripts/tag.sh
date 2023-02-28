@@ -1,4 +1,4 @@
-DKANY_VERSION='0.0.4'
+DKANY_VERSION='0.0.5'
 version="v${DKANY_VERSION}"
 echo "Tagging "$DKANY_VERSION
 git tag $version
