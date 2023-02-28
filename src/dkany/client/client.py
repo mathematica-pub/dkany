@@ -32,6 +32,9 @@ class DKANClient(object):
         session = sessions.BaseUrlSession(self.base_url)
         if user_name is not None:
              session.auth = (user_name, password)
+             self.user_name = user_name
+        else:
+            self.user_name = "anonymous"
 
         if cookie_dict is not None:
             cookies = RequestsCookieJar()
@@ -40,16 +43,16 @@ class DKANClient(object):
 
         self.session = session
 
-        self.search_url = "api/1/search"
-        self.post_new_dataset_url = "api/1/metastore/schemas/dataset/items"
+        self.search_url = "api/1/search?_format=json"
+        self.post_new_dataset_url = "api/1/metastore/schemas/dataset/items?_format=json"
         self.existing_dataset_url = (
-            "api/1/metastore/schemas/dataset/items/{dataset_identifier}"
+            "api/1/metastore/schemas/dataset/items/{dataset_identifier}?_format=json"
         )
         self.revise_dataset_url = (
-            "api/1/metastore/schemas/dataset/items/{dataset_identifier}/revisions"
+            "api/1/metastore/schemas/dataset/items/{dataset_identifier}/revisions?_format=json"
         )
         self.query_datastore_url = (
-            "api/1/datastore/query/{dataset_identifier}/{datastore_idx}"
+            "api/1/datastore/query/{dataset_identifier}/{datastore_idx}?_format=json"
         )
         self.dkan_time_format = "%Y-%m-%dT%H:%M:%S"
 
