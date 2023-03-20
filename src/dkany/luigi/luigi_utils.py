@@ -132,6 +132,7 @@ class WriteToDkanDatasetIdBySearch(luigi.Task):
 
         return target
 
+    # TODO: abstract into general createOrUpdate function, move into client.py and examples in scorecard repo
     def run(self):
         logger.debug("Running CreateOrUpdateDkanDataset")
         dkan_client = self.make_dkan_client()
