@@ -1,5 +1,6 @@
 import logging
 import requests
+import json
 from requests_toolbelt import sessions
 from requests.cookies import RequestsCookieJar
 from datetime import datetime as dt
@@ -7,6 +8,7 @@ from copy import deepcopy as copy
 from dkany.client.errors import BadResponse
 
 logger = logging.getLogger(__name__)
+
 
 def url_join(url_part_list):
     return "/".join(url_part_list)
@@ -17,22 +19,15 @@ class DKANClient(object):
     docstring
     """
 
-    def __init__(
-            self, 
-            base_url=None, 
-            cookie_dict=None, 
-            user_name=None, 
-            password=None
-        ):
-
+    def __init__(self, base_url=None, cookie_dict=None, user_name=None, password=None):
         self.base_url = base_url
 
         logger.info(f"Creating DKAN client for {self.base_url}")
 
         session = sessions.BaseUrlSession(self.base_url)
         if user_name is not None:
-             session.auth = (user_name, password)
-             self.user_name = user_name
+            session.auth = (user_name, password)
+            self.user_name = user_name
         else:
             self.user_name = "anonymous"
 
@@ -48,22 +43,26 @@ class DKANClient(object):
         self.existing_dataset_url = (
             "api/1/metastore/schemas/dataset/items/{dataset_identifier}?_format=json"
         )
-        self.revise_dataset_url = (
-            "api/1/metastore/schemas/dataset/items/{dataset_identifier}/revisions?_format=json"
-        )
+        self.revise_dataset_url = "api/1/metastore/schemas/dataset/items/{dataset_identifier}/revisions?_format=json"
         self.query_datastore_url = (
             "api/1/datastore/query/{dataset_identifier}/{datastore_idx}?_format=json"
         )
+
+        self.hide_dataset_dict = {"state": "hidden", "message": "hiding dataset"}
+        self.publish_dataset_dict = {
+            "state": "published",
+            "message": "publishing dataset",
+        }
+
         self.dkan_time_format = "%Y-%m-%dT%H:%M:%S"
 
     def __repr__(self) -> str:
         return f"DKAN client for {self.base_url} with user {self.user_name}"
-    
+
     def __str__(self) -> str:
         return f"DKAN client for {self.base_url} with user {self.user_name}"
 
     def _process_response(self, response, acceptable_responses=[200, 201]):
-
         if response.status_code not in acceptable_responses:
             raise (BadResponse(response, acceptable_responses))
         out = response.json()
@@ -94,7 +93,6 @@ class DKANClient(object):
         return all_results
 
     def search(self, title=None, tags=None, categories=None, page="ALL"):
-
         params = {}
         if title is not None:
             params["title"] = title
@@ -118,7 +116,6 @@ class DKANClient(object):
         return out
 
     def filter_search_results(self, search_results, filter_params):
-
         if filter_params is None:
             return search_results
         if len(filter_params.keys()) == 0:
@@ -151,17 +148,28 @@ class DKANClient(object):
         )
         return self._process_response(response)
 
-    def revise_dataset(self, dataset_identifier, body):
+    def hide_dataset(self, dataset_identifier, message=""):
+        if message:
+            self.hide_dataset_dict["message"] = message
         response = self.session.post(
             self.revise_dataset_url.format(dataset_identifier=dataset_identifier),
-            json=body
+            json=self.hide_dataset_dict,
+        )
+        return self._process_response(response)
+
+    def publish_dataset(self, dataset_identifier, message=""):
+        if message:
+            self.publish_dataset_dict["message"] = message
+        response = self.session.post(
+            self.revise_dataset_url.format(dataset_identifier=dataset_identifier),
+            json=self.publish_dataset_dict,
         )
         return self._process_response(response)
 
     def get_dataset_metadata(self, dataset_identifier):
         response = self.session.get(
             self.existing_dataset_url.format(dataset_identifier=dataset_identifier),
-            params={'_format':"json"}
+            params={"_format": "json"},
         )
         return self._process_response(response)
 
