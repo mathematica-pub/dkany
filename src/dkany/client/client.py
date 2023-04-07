@@ -148,7 +148,10 @@ class DKANClient(object):
         )
         return self._process_response(response)
 
-    def hide_dataset(self, dataset_identifier, message=""):
+    def make_dataset_hidden(self, dataset_identifier, message=""):
+        """
+        Hides dataset from searches made on data.medicare.gov user interface
+        """
         if message:
             self.hide_dataset_dict["message"] = message
         response = self.session.post(
@@ -157,7 +160,10 @@ class DKANClient(object):
         )
         return self._process_response(response)
 
-    def publish_dataset(self, dataset_identifier, message=""):
+    def make_dataset_public(self, dataset_identifier, message=""):
+        """
+        Makes a dataset searchable through data.medicare.gov user interface
+        """
         if message:
             self.publish_dataset_dict["message"] = message
         response = self.session.post(
