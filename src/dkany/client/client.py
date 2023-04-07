@@ -150,6 +150,7 @@ class DKANClient(object):
 
     def make_dataset_hidden(self, dataset_identifier, message=""):
         """
+        Sets dataset accesslevel to "hidden"
         Hides dataset from searches made on data.medicare.gov user interface
         """
         if message:
@@ -162,6 +163,7 @@ class DKANClient(object):
 
     def make_dataset_public(self, dataset_identifier, message=""):
         """
+        Sets dataset accesslevel to "published"
         Makes a dataset searchable through data.medicare.gov user interface
         """
         if message:
