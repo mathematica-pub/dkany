@@ -1,6 +1,5 @@
 import logging
 import requests
-import json
 from requests_toolbelt import sessions
 from requests.cookies import RequestsCookieJar
 from datetime import datetime as dt
