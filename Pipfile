@@ -5,7 +5,6 @@ name = "pypi"
 
 [packages]
 dkany = {editable = true, path = "."}
-pysftp = "*"
 
 [dev-packages]
 pytest = "*"
