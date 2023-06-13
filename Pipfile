@@ -8,6 +8,7 @@ dkany = {editable = true, path = "."}
 
 [dev-packages]
 pytest = "*"
+exceptiongroup = "*"
 pytest-cov = "*"
 pytest-html = "*"
 jupyter = "*"
