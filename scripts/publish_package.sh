@@ -9,9 +9,9 @@ pipenv sync --dev
 python setup.py sdist bdist_wheel
 
 aws codeartifact login --tool twine \
-    --domain dil-domain \
-    --domain-owner 803461793753 \
-    --repository dil-repository
+    --domain shared-package-domain \
+    --domain-owner 922539530544 \
+    --repository shared-package-repository
 
 twine upload --repository codeartifact \
-    dist/dkany-0.0.12.tar.gz
+    dist/dkany-0.0.12.tar.gz --verbose
