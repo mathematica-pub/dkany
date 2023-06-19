@@ -18,11 +18,6 @@ def read_dataset_id():
 # ----------------------------------
 # Tests
 # ----------------------------------
-def test_check_dataset_exists(dkan_client,read_dataset_id):
-        exists = dkan_client.check_dataset_exists(read_dataset_id)
-        print(f"dataset {exists} exists")
-        assert exists == True
-
 def test_search(dkan_client):
         title_success = "Product Data for Newly Reported Drugs in the Medicaid Drug Rebate Program 2023-02-06-to-2023-02-12"
         search_success = dkan_client.search(title=title_success)
@@ -33,6 +28,11 @@ def test_search(dkan_client):
         search_fail = dkan_client.search(title=title_fail)
         assert len(search_fail) == 0
         print("Search fail:", len(search_fail))
+
+def test_check_dataset_exists(dkan_client,read_dataset_id):
+        exists = dkan_client.check_dataset_exists(read_dataset_id)
+        print(f"dataset {exists} exists")
+        assert exists == True
 
 def test_get_dataset_metadata(dkan_client,read_dataset_id):
         metadata = dkan_client.get_dataset_metadata(read_dataset_id)
