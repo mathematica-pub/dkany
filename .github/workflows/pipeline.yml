@@ -33,12 +33,6 @@ jobs:
 
       - name: run tests
         run: pipenv run bash scripts/test.sh
-
-      - name: Upload Test Results
-        uses: actions/upload-artifact@v3
-        with:
-          name: test-report
-          path: test-reports/test.html
       
       - name: Upload all test artifacts
         uses: actions/upload-artifact@v3
