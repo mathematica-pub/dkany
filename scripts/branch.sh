@@ -1,7 +1,7 @@
 #!/bin/bash
 echo "Positional Parameters"
 ticket_number_desc=$1;
-branch_name="features/dqatl-${ticket_number_desc}";
+branch_name="features/macscore-${ticket_number_desc}";
 echo 'ticket_number_desc = '$ticket_number_desc
 echo 'branch_name = ' $branch_name
 
