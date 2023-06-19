@@ -37,12 +37,12 @@ jobs:
       - name: Upload Test Results
         uses: actions/upload-artifact@v3
         with:
-          name: test-reports
-          path: test-reports/test.hml
+          name: test-report
+          path: test-reports/test.html
       
       - name: Upload all test artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: test-reports
+          name: all-test-artifacts
           path: test-reports/*
 
