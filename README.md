@@ -35,3 +35,7 @@ There are many ways to run the tests associated with this app.
 
 # Ideas for Improvement
 TODO: Validate dataset file (All columns have column names)
+
+# Deploying
+
+See [our confluence doc on deploying to AWS CodeArtifact](https://mathematicampr.atlassian.net/wiki/spaces/WEB/pages/2514354711/Deploying+to+AWS+CodeArtifact)
