@@ -12,8 +12,7 @@ def dkan_client():
 
 @pytest.fixture(scope="function")
 def read_dataset_id():
-    test_dataset_id = "9e407144-9ed9-5cee-937a-17d65b07a9a7"
-    return test_dataset_id
+    return "9e407144-9ed9-5cee-937a-17d65b07a9a7"
 
 # ----------------------------------
 # Tests
