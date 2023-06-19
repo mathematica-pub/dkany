@@ -31,4 +31,18 @@ jobs:
           pip install pipenv
           pipenv install --dev
 
-      - run: pipenv run bash scripts/test.sh
+      - name: run tests
+        run: pipenv run bash scripts/test.sh
+
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-reports
+          path: test-reports/test.hml
+      
+      - name: Upload all test artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-reports
+          path: test-reports/*
+
