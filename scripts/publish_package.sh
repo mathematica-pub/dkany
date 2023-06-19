@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if [[ -z $(which python | grep virtual) ]]; then
     echo "Error: not running from virtual env"
     echo "USAGE: pipenv run bash scripts/publish_package.sh"
@@ -26,5 +28,7 @@ AWS_PROFILE=$aws_profile aws codeartifact login --tool twine \
     --domain-owner 922539530544 \
     --repository shared-package-repository
 
-python -m twine upload --repository codeartifact \
-    dist/dkany-0.0.12.tar.gz --verbose
+# lists all compiled distributions, parses the version, sorts, and only keeps the last result.
+latest_distribution=$(ls dist/dkany-*.tar.gz | awk -F"-" '{print $NF, $0}' | sort -V | tail -n 1 | awk '{print $2}')
+
+python -m twine upload --repository codeartifact $latest_distribution --verbose
