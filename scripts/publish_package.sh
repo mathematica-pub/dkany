@@ -19,11 +19,7 @@ pipenv sync --dev
 
 python setup.py sdist bdist_wheel
 
-# note: you may have to configure a region as well. add the following to ~/.aws/config
-# [profile devops]
-# region = us-east-1
-
-AWS_PROFILE=$aws_profile aws codeartifact login --tool twine \
+AWS_PROFILE=$aws_profile aws --region=us-east-1 codeartifact login --tool twine \
     --domain shared-package-domain \
     --domain-owner 922539530544 \
     --repository shared-package-repository
