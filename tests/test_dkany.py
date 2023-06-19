@@ -37,7 +37,6 @@ def test_get_dataset_metadata(dkan_client,read_dataset_id):
         metadata = dkan_client.get_dataset_metadata(read_dataset_id)
         assert metadata["identifier"] == read_dataset_id
         
-            
 def test_get_data_by_dataset_identifier(dkan_client,read_dataset_id):
     results = dkan_client.get_data_by_dataset_identifier(read_dataset_id)
     assert len(results) > 0
