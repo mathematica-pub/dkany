@@ -17,13 +17,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
-          aws-region: us-east-1
+      - name: Add profile credentials to ~/.aws/credentials
+        run: |
+            aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID --profile devops
+            aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY --profile devops
+            aws configure set aws_session_token $AWS_SESSION_TOKEN --profile devops
+            aws configure set default.region us-east-1 --profile devops
 
       - name: Setup Python
         uses: actions/setup-python@v4
