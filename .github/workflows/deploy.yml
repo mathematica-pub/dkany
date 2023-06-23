@@ -32,6 +32,3 @@ jobs:
 
       - name: Deploy
         run: pipenv run bash scripts/publish_package.sh
-      
-      - name: Update Tag
-        run: pipenv run bash scripts/git_tag.sh
