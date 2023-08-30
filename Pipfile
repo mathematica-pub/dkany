@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 dkany = {editable = true, path = "."}
 
+
 [dev-packages]
 pytest = "*"
 exceptiongroup = "*"
@@ -14,3 +15,6 @@ pytest-html = "*"
 jupyter = "*"
 luigi = "*"
 twine = "*"
+build = "*"
+hatch = "*"
+hatchling = "*"

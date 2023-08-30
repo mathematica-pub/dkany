@@ -1,5 +1,5 @@
-DKANY_VERSION=$(pipenv run python ./setup.py --version)
-version="v${DKANY_VERSION}"
-echo "Tagging "$DKANY_VERSION
-git tag $version
-git push origin $version
+PACKAGE_VERSION=$(pipenv run python -m hatch version)
+version_tag="v${PACKAGE_VERSION}"
+echo "Tagging "$PACKAGE_VERSION
+# git tag $version_tag
+# git push origin $version_tag

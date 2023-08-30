@@ -1,2 +1,23 @@
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+include = [
+    "src/**"
+]
+
+[tool.hatch.version]
+path = "src/dkany/__about__.py"
+
+[project]
+dynamic = ["version"]
+name = "dkany"
+description = "dkany"
+readme = "README.md"
+dependencies = [
+    "pandas", 
+    "requests", 
+    "requests-toolbelt", 
+    "pysftp", 
+]
