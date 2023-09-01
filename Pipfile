@@ -4,8 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-dkany = {editable = true, path = "."}
-
+dkany = {file = ".", editable = true}
 
 [dev-packages]
 pytest = "*"
