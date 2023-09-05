@@ -28,5 +28,6 @@ jobs:
       - name: Install pipenv
         run: pip install pipenv
 
+# TODO: Figure out running the package version bump in hatch, commiting it, and tagging it, from here
       - name: Deploy
         run: pipenv run bash scripts/publish_package.sh

@@ -11,7 +11,7 @@ fi
 
 pipenv sync --dev
 
-pipenv run python setup.py sdist bdist_wheel
+pipenv run python -m build 
 
 AWS_PROFILE=$aws_profile aws --region=us-east-1 codeartifact login --tool twine \
     --domain shared-package-domain \
@@ -20,5 +20,7 @@ AWS_PROFILE=$aws_profile aws --region=us-east-1 codeartifact login --tool twine 
 
 # lists all compiled distributions, parses the version, sorts, and only keeps the last result.
 latest_distribution=$(ls dist/dkany-*.tar.gz | awk -F"-" '{print $NF, $0}' | sort -V | tail -n 1 | awk '{print $2}')
+
+echo "latest_distribution=${latest_distribution}"
 
 pipenv run python -m twine upload --repository codeartifact $latest_distribution --verbose
