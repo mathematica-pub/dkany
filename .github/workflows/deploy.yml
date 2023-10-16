@@ -13,7 +13,7 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 jobs:
-  test:
+  publish_package:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -35,5 +35,4 @@ jobs:
 # TODO: Figure out running the package version bump in hatch, commiting it, and tagging it, from here
       - name: Deploy
         run: |
-          chmod +x scripts/publish_package.sh
-          pipenv run bash ./scripts/publish_package.sh
+            bash -e ./scripts/publish_package.sh
