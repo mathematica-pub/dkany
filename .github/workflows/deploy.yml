@@ -32,7 +32,9 @@ jobs:
       - name: Install pipenv
         run: pip install pipenv
 
-# TODO: Figure out running the package version bump in hatch, commiting it, and tagging it, from here
+      - name: Install required Python packages
+        run: pipenv install tomli toml
+
+      # TODO: Figure out running the package version bump in hatch, commiting it, and tagging it, from here
       - name: Deploy
-        run: |
-            bash -e ./scripts/publish_package.sh
+        run: pipenv run bash ./scripts/publish_package.sh
