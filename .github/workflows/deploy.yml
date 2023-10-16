@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
+
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -30,4 +34,4 @@ jobs:
 
 # TODO: Figure out running the package version bump in hatch, commiting it, and tagging it, from here
       - name: Deploy
-        run: pipenv run bash scripts/publish_package.sh
+        run: bash -e scripts/publish_package.sh
