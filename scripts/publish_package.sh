@@ -12,6 +12,8 @@ fi
 pipenv sync --dev
 pipenv run python -m build 
 
+ID=$(aws sts get-caller-identity --query Account --output text --profile $aws_profile)
+echo "ID=${ID}"
 AWS_PROFILE=$aws_profile aws --region=us-east-1 codeartifact login --tool twine \
     --domain shared-package-domain \
     --domain-owner 922539530544 \
