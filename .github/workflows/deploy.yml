@@ -4,15 +4,24 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
 env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 jobs:
-  test:
+  publish_package:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
       - name: Add profile credentials to ~/.aws/credentials
         run: |
@@ -20,14 +29,36 @@ jobs:
             aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY --profile devops
             aws configure set default.region us-east-1 --profile devops
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.9
+      - name: Test commit
+        run: |
+          echo "Test commit" >> test.txt
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add test.txt
+          git commit -m "Test commit"
+          git push origin HEAD:${{ github.head_ref }}
+      # - name: Setup Python
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     python-version: 3.9
+          
+      # - name: Install pipenv
+      #   run: pip install pipenv
 
-      - name: Install pipenv
-        run: pip install pipenv
+      # - name: Install toml and tomli
+      #   run: pipenv install tomli toml
 
-# TODO: Figure out running the package version bump in hatch, commiting it, and tagging it, from here
-      - name: Deploy
-        run: pipenv run bash scripts/publish_package.sh
+      # - name: Minor version bump
+      #   run: pipenv run bash ./scripts/bump_version.sh
+      
+      # - name: Commit version bump
+      #   run: |
+      #     git config --local user.email "action@github.com"
+      #     git config --local user.name "GitHub Action"
+      #     git add src/dkany/__about__.py
+      #     git commit -m "Bump version $(cat src/dkany/__about__.py | grep '__version__' | cut -d'=' -f2)"
+      #     git push
+
+      # # # TODO: Figure out running the package version bump in hatch, commiting it, and tagging it, from here
+      # - name: Deploy
+      #   run: pipenv run bash ./scripts/publish_package.sh

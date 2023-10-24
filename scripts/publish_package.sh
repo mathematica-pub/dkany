@@ -10,7 +10,6 @@ else
 fi
 
 pipenv sync --dev
-
 pipenv run python -m build 
 
 AWS_PROFILE=$aws_profile aws --region=us-east-1 codeartifact login --tool twine \
