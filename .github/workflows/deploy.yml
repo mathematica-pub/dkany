@@ -31,7 +31,10 @@ jobs:
 
       - name: Install pipenv
         run: pip install pipenv
-      
+
+      - name: Install toml and tomli
+        run: pipenv install tomli toml
+
       - name: Minor version bump
         run: pipenv run bash ./scripts/bump_version.sh
       
