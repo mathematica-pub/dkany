@@ -3,9 +3,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
 
 permissions:
   contents: write
@@ -25,19 +22,19 @@ jobs:
             aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY --profile devops
             aws configure set default.region us-east-1 --profile devops
 
-      # - name: Setup Python
-      #   uses: actions/setup-python@v4
-      #   with:
-      #     python-version: 3.9
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
 
-      # - name: Install pipenv
-      #   run: pip install pipenv
+      - name: Install pipenv
+        run: pip install pipenv
 
-      # - name: Install toml and tomli
-      #   run: pipenv install tomli toml
+      - name: Install toml and tomli
+        run: pipenv install tomli toml
 
-      # - name: Deploy
-      #   run: pipenv run bash scripts/publish_package.sh
+      - name: Deploy
+        run: pipenv run bash scripts/publish_package.sh
 
       - name: Git tag with version
         run: |
