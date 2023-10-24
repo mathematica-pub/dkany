@@ -34,7 +34,10 @@ jobs:
 
       - name: Install required Python packages
         run: pipenv install tomli toml
+      
+      - name: Minor version bump
+        run: pipenv run bash ./scripts/bump_version.sh
 
-      # TODO: Figure out running the package version bump in hatch, commiting it, and tagging it, from here
-      - name: Deploy
-        run: pipenv run bash ./scripts/publish_package.sh
+      # # TODO: Figure out running the package version bump in hatch, commiting it, and tagging it, from here
+      # - name: Deploy
+      #   run: pipenv run bash ./scripts/publish_package.sh
