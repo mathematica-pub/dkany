@@ -32,30 +32,27 @@ jobs:
         with:
           python-version: 3.9
           
-      - name: Extract branch name
-        run: |
-          echo ${{ github.head_ref }}
-      # - name: Install pipenv
-      #   run: pip install pipenv
+      - name: Install pipenv
+        run: pip install pipenv
 
-      # - name: Install toml and tomli
-      #   run: pipenv install tomli toml
+      - name: Install toml and tomli
+        run: pipenv install tomli toml
 
-      # - name: Minor version bump
-      #   run: pipenv run bash ./scripts/bump_version.sh
+      - name: Minor version bump
+        run: pipenv run bash ./scripts/bump_version.sh
       
-      # - name: Commit version bump
-      #   run: |
-      #     git config --local user.email "action@github.com"
-      #     git config --local user.name "GitHub Action"
-      #     git add src/dkany/__about__.py
-      #     git commit -m "Bump version $(cat src/dkany/__about__.py | grep '__version__' | cut -d'=' -f2)"
+      - name: Commit version bump
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add src/dkany/__about__.py
+          git commit -m "Bump version $(cat src/dkany/__about__.py | grep '__version__' | cut -d'=' -f2)"
           
-      # Optional: Push the commit to the main branch
-      # This step might not be required if you're just making the commit and not pushing it
-      # - name: Push changes
-      #   run: |
-      #     git push
+      Optional: Push the commit to the main branch
+      This step might not be required if you're just making the commit and not pushing it
+      - name: Push changes
+        run: |
+          git push origin ${{ github.head_ref }}
 
       # # # TODO: Figure out running the package version bump in hatch, commiting it, and tagging it, from here
       # - name: Deploy
