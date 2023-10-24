@@ -36,7 +36,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git add test.txt
           git commit -m "Test commit"
-          git push
+          git push origin HEAD:${{ github.head_ref }}
       # - name: Setup Python
       #   uses: actions/setup-python@v4
       #   with:
