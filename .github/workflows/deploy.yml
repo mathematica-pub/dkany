@@ -48,8 +48,6 @@ jobs:
           git add src/dkany/__about__.py
           git commit -m "Bump version $(cat src/dkany/__about__.py | grep '__version__' | cut -d'=' -f2)"
           
-      Optional: Push the commit to the main branch
-      This step might not be required if you're just making the commit and not pushing it
       - name: Push changes
         run: |
           git push origin ${{ github.head_ref }}
