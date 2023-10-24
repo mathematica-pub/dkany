@@ -34,8 +34,7 @@ jobs:
           
       - name: Extract branch name
         run: |
-          branch_name=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
-          echo "Current branch is $branch_name"
+          echo ${{ github.head_ref }}
       # - name: Install pipenv
       #   run: pip install pipenv
 
