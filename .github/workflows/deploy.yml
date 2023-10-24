@@ -49,8 +49,7 @@ jobs:
       # This step might not be required if you're just making the commit and not pushing it
       - name: Push changes
         run: |
-          echo ${{ github }}
-          git push origin ${{ github.ref_name }}
+          git push -u origin HEAD
 
       # # # TODO: Figure out running the package version bump in hatch, commiting it, and tagging it, from here
       # - name: Deploy
