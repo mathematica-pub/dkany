@@ -20,14 +20,18 @@ jobs:
             aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY --profile devops
             aws configure set default.region us-east-1 --profile devops
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.9
+      - name: Extract branch name
+        run: |
+          branch_name=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
+          echo "Current branch is $branch_name"
+#       - name: Setup Python
+#         uses: actions/setup-python@v4
+#         with:
+#           python-version: 3.9
 
-      - name: Install pipenv
-        run: pip install pipenv
+#       - name: Install pipenv
+#         run: pip install pipenv
 
-# TODO: Figure out running the package version bump in hatch, commiting it, and tagging it, from here
-      - name: Deploy
-        run: pipenv run bash scripts/publish_package.sh
+# # TODO: Figure out running the package version bump in hatch, commiting it, and tagging it, from here
+#       - name: Deploy
+#         run: pipenv run bash scripts/publish_package.sh

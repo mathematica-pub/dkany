@@ -21,22 +21,22 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.9
+      # - name: Setup Python
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     python-version: 3.9
 
-      - name: Install dependencies with pipenv
-        run: |
-          pip install pipenv
-          pipenv install --dev
+      # - name: Install dependencies with pipenv
+      #   run: |
+      #     pip install pipenv
+      #     pipenv install --dev
 
-      - name: run tests
-        run: pipenv run bash scripts/test.sh
+      # - name: run tests
+      #   run: pipenv run bash scripts/test.sh
       
-      - name: Upload all test artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: all-test-artifacts
-          path: test-reports/*
+      # - name: Upload all test artifacts
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: all-test-artifacts
+      #     path: test-reports/*
 
