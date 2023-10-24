@@ -1,0 +1,43 @@
+name: Bump version
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+
+      - name: Install pipenv
+        run: pip install pipenv
+
+      - name: Install toml and tomli
+        run: pipenv install tomli toml
+
+      - name: Minor version bump
+        run: pipenv run bash ./scripts/bump_version.sh
+
+      - name: Commit version bump
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add src/dkany/__about__.py
+          git commit -m "Bump version $(cat src/dkany/__about__.py | grep '__version__' | cut -d'=' -f2)"
+          git push origin HEAD:${{ github.head_ref }}
