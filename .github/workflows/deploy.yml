@@ -47,10 +47,7 @@ jobs:
           git config --local user.name "GitHub Action"
           git add src/dkany/__about__.py
           git commit -m "Bump version $(cat src/dkany/__about__.py | grep '__version__' | cut -d'=' -f2)"
-          
-      - name: Push changes
-        run: |
-          git push origin ${{ github.head_ref }}
+          git push
 
       # # # TODO: Figure out running the package version bump in hatch, commiting it, and tagging it, from here
       # - name: Deploy
