@@ -20,10 +20,9 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-      - name: Extract branch name
+      - name: Get branch name
         run: |
-          branch_name=$(echo $GITHUB_REF | sed 's/refs\/heads\///')
-          echo "Current branch is $branch_name"
+          echo "Current branch is ${{ github.head_ref }}"
       # - name: Setup Python
       #   uses: actions/setup-python@v4
       #   with:
