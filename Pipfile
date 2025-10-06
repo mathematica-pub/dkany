@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 dkany = {file = ".", editable = true}
+requests = "*"
+requests-toolbelt = "*"
 
 [dev-packages]
 pytest = "*"
@@ -20,3 +22,5 @@ hatchling = "*"
 pysftp = "*"
 setuptools = "*"
 paramiko = "*"
+mypy = "*"
+types-requests = "*"

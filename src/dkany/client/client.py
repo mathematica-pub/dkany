@@ -1,10 +1,12 @@
 import logging
-import requests
-import json
-from requests_toolbelt import sessions
-from requests.cookies import RequestsCookieJar
-from datetime import datetime as dt
 from copy import deepcopy as copy
+from datetime import datetime as dt
+from typing import List, Optional
+
+import requests
+from requests.cookies import RequestsCookieJar
+from requests_toolbelt import sessions
+
 from dkany.client.errors import BadResponse
 
 logger = logging.getLogger(__name__)
@@ -14,12 +16,12 @@ def url_join(url_part_list):
     return "/".join(url_part_list)
 
 
-class DKANClient(object):
+class DKANClient:
     """
     docstring
     """
 
-    def __init__(self, base_url=None, cookie_dict=None, user_name=None, password=None):
+    def __init__(self, base_url: Optional[str] = None, cookie_dict=None, user_name=None, password=None):
         self.base_url = base_url
 
         logger.info(f"Creating DKAN client for {self.base_url}")
@@ -40,13 +42,9 @@ class DKANClient(object):
 
         self.search_url = "api/1/search?_format=json"
         self.post_new_dataset_url = "api/1/metastore/schemas/dataset/items?_format=json"
-        self.existing_dataset_url = (
-            "api/1/metastore/schemas/dataset/items/{dataset_identifier}?_format=json"
-        )
+        self.existing_dataset_url = "api/1/metastore/schemas/dataset/items/{dataset_identifier}?_format=json"
         self.revise_dataset_url = "api/1/metastore/schemas/dataset/items/{dataset_identifier}/revisions?_format=json"
-        self.query_datastore_url = (
-            "api/1/datastore/query/{dataset_identifier}/{datastore_idx}?_format=json"
-        )
+        self.query_datastore_url = "api/1/datastore/query/{dataset_identifier}/{datastore_idx}?_format=json"
 
         self.hide_dataset_dict = {"state": "hidden", "message": "hiding dataset"}
         self.publish_dataset_dict = {
@@ -62,9 +60,10 @@ class DKANClient(object):
     def __str__(self) -> str:
         return f"DKAN client for {self.base_url} with user {self.user_name}"
 
-    def _process_response(self, response, acceptable_responses=[200, 201]):
+    def _process_response(self, response, acceptable_responses: Optional[List[int]] = None):
+        acceptable_responses = acceptable_responses or [200, 201]
         if response.status_code not in acceptable_responses:
-            raise (BadResponse(response, acceptable_responses))
+            raise BadResponse(response, acceptable_responses)
         out = response.json()
         return out
 
@@ -136,9 +135,7 @@ class DKANClient(object):
         return self._process_response(response)
 
     def delete_dataset(self, dataset_identifier):
-        response = self.session.delete(
-            self.existing_dataset_url.format(dataset_identifier=dataset_identifier)
-        )
+        response = self.session.delete(self.existing_dataset_url.format(dataset_identifier=dataset_identifier))
         return self._process_response(response)
 
     def update_dataset(self, dataset_identifier, body):
@@ -183,7 +180,7 @@ class DKANClient(object):
 
     def check_dataset_exists(self, dataset_identifier):
         try:
-            dataset_metadata = self.get_dataset_metadata(dataset_identifier)
+            _ = self.get_dataset_metadata(dataset_identifier)
             return True
         except BadResponse:
             return False
@@ -197,16 +194,12 @@ class DKANClient(object):
         return url_join(
             [
                 self.base_url,
-                self.query_datastore_url.format(
-                    dataset_identifier=dataset_identifier, datastore_idx=datastore_idx
-                ),
+                self.query_datastore_url.format(dataset_identifier=dataset_identifier, datastore_idx=datastore_idx),
             ]
         )
 
     def get_data_by_dataset_identifier(self, dataset_identifier, datastore_idx=0):
         response = self.session.get(
-            self.query_datastore_url.format(
-                dataset_identifier=dataset_identifier, datastore_idx=datastore_idx
-            )
+            self.query_datastore_url.format(dataset_identifier=dataset_identifier, datastore_idx=datastore_idx)
         )
         return self._process_response(response)

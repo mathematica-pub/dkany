@@ -1,5 +1,5 @@
-from dkany.data_hosts.sftp import SftpClient
-import os 
+# import os
+# from dkany.data_hosts.sftp import SftpClient
 
 def test_akamai_sftp_client():
     pass
@@ -19,3 +19,4 @@ def test_akamai_sftp_client():
 
     # print(output)
     # raise(ValueError("hi"))
+    

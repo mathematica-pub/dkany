@@ -23,5 +23,9 @@
         "--junitxml=./test-reports/test.xml"
     ],
     "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "python.testing.pytestEnabled": true,
+    "pylint.args": [
+        "--disable=C0114,C0115,C0116",
+        "--max-line-length=120"
+    ],
 }
