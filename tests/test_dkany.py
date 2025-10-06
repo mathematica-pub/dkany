@@ -1,3 +1,5 @@
+# ignore redefining from outer scope, false positive from fixtures
+# pylint: disable=W0621 
 import pytest
 from dkany.client import DKANClient
 
@@ -19,29 +21,29 @@ def read_dataset_id():
 # ----------------------------------
 # Tests
 # ----------------------------------
-def test_search(client):
+def test_search(dkan_client):
     title_success = "Product Data for Newly Reported Drugs in the Medicaid Drug Rebate Program 2023-02-06-to-2023-02-12"
-    search_success = client.search(title=title_success)
+    search_success = dkan_client.search(title=title_success)
     assert len(search_success) == 1
     print("Search success:", len(search_success))
 
     title_fail = "Product Data for asdfasdf"
-    search_fail = client.search(title=title_fail)
+    search_fail = dkan_client.search(title=title_fail)
     assert len(search_fail) == 0
     print("Search fail:", len(search_fail))
 
 
-def test_check_dataset_exists(client, dataset_id):
-    exists = client.check_dataset_exists(dataset_id)
+def test_check_dataset_exists(dkan_client, read_dataset_id):
+    exists = dkan_client.check_dataset_exists(read_dataset_id)
     print(f"dataset {exists} exists")
     assert exists
 
 
-def test_get_dataset_metadata(client, dataset_id):
-    metadata = client.get_dataset_metadata(dataset_id)
-    assert metadata["identifier"] == dataset_id
+def test_get_dataset_metadata(dkan_client, read_dataset_id):
+    metadata = dkan_client.get_dataset_metadata(read_dataset_id)
+    assert metadata["identifier"] == read_dataset_id
 
 
-def test_get_data_by_dataset_identifier(client, dataset_id):
-    results = client.get_data_by_dataset_identifier(dataset_id)
+def test_get_data_by_dataset_identifier(dkan_client, read_dataset_id):
+    results = dkan_client.get_data_by_dataset_identifier(read_dataset_id)
     assert len(results) > 0
