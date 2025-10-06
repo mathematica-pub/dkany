@@ -14,12 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - name: Add profile credentials to ~/.aws/credentials
-        run: |
-            aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID --profile devops
-            aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY --profile devops
-            aws configure set default.region us-east-1 --profile devops
-
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
