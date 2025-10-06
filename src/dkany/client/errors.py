@@ -1,5 +1,6 @@
 class Error(Exception):
     """Base class for exceptions in this module."""
+    message: str
 
     def __str__(self):
         return self.message
@@ -10,7 +11,6 @@ class Error(Exception):
 
 class BadResponse(Error):
     def __init__(self, response, acceptable_status_codes):
-
         status_code = response.status_code
         message = []
         message.append(

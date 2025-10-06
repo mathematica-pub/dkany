@@ -5,7 +5,7 @@ from typing import List, Optional
 
 import requests
 from requests.cookies import RequestsCookieJar
-from requests_toolbelt import sessions
+from requests_toolbelt import sessions # type: ignore
 
 from dkany.client.errors import BadResponse
 
@@ -21,10 +21,16 @@ class DKANClient:
     docstring
     """
 
-    def __init__(self, base_url: Optional[str] = None, cookie_dict=None, user_name=None, password=None):
+    def __init__(
+        self,
+        base_url: Optional[str] = None,
+        cookie_dict: Optional[dict] = None,
+        user_name: Optional[str] = None,
+        password: Optional[str] = None,
+    ):
         self.base_url = base_url
 
-        logger.info(f"Creating DKAN client for {self.base_url}")
+        logger.info("Creating DKAN client for %s", self.base_url)
 
         session = sessions.BaseUrlSession(self.base_url)
         if user_name is not None:
@@ -42,9 +48,13 @@ class DKANClient:
 
         self.search_url = "api/1/search?_format=json"
         self.post_new_dataset_url = "api/1/metastore/schemas/dataset/items?_format=json"
-        self.existing_dataset_url = "api/1/metastore/schemas/dataset/items/{dataset_identifier}?_format=json"
+        self.existing_dataset_url = (
+            "api/1/metastore/schemas/dataset/items/{dataset_identifier}?_format=json"
+        )
         self.revise_dataset_url = "api/1/metastore/schemas/dataset/items/{dataset_identifier}/revisions?_format=json"
-        self.query_datastore_url = "api/1/datastore/query/{dataset_identifier}/{datastore_idx}?_format=json"
+        self.query_datastore_url = (
+            "api/1/datastore/query/{dataset_identifier}/{datastore_idx}?_format=json"
+        )
 
         self.hide_dataset_dict = {"state": "hidden", "message": "hiding dataset"}
         self.publish_dataset_dict = {
@@ -60,7 +70,9 @@ class DKANClient:
     def __str__(self) -> str:
         return f"DKAN client for {self.base_url} with user {self.user_name}"
 
-    def _process_response(self, response, acceptable_responses: Optional[List[int]] = None):
+    def _process_response(
+        self, response, acceptable_responses: Optional[List[int]] = None
+    ):
         acceptable_responses = acceptable_responses or [200, 201]
         if response.status_code not in acceptable_responses:
             raise BadResponse(response, acceptable_responses)
@@ -91,7 +103,9 @@ class DKANClient:
 
         return all_results
 
-    def search(self, title=None, tags=None, categories=None, page="ALL"):
+    def search(
+        self, title: Optional[str] = None, tags=None, categories=None, page="ALL"
+    ):
         params = {}
         if title is not None:
             params["title"] = title
@@ -135,7 +149,9 @@ class DKANClient:
         return self._process_response(response)
 
     def delete_dataset(self, dataset_identifier):
-        response = self.session.delete(self.existing_dataset_url.format(dataset_identifier=dataset_identifier))
+        response = self.session.delete(
+            self.existing_dataset_url.format(dataset_identifier=dataset_identifier)
+        )
         return self._process_response(response)
 
     def update_dataset(self, dataset_identifier, body):
@@ -194,12 +210,16 @@ class DKANClient:
         return url_join(
             [
                 self.base_url,
-                self.query_datastore_url.format(dataset_identifier=dataset_identifier, datastore_idx=datastore_idx),
+                self.query_datastore_url.format(
+                    dataset_identifier=dataset_identifier, datastore_idx=datastore_idx
+                ),
             ]
         )
 
     def get_data_by_dataset_identifier(self, dataset_identifier, datastore_idx=0):
         response = self.session.get(
-            self.query_datastore_url.format(dataset_identifier=dataset_identifier, datastore_idx=datastore_idx)
+            self.query_datastore_url.format(
+                dataset_identifier=dataset_identifier, datastore_idx=datastore_idx
+            )
         )
         return self._process_response(response)

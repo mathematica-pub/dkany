@@ -27,6 +27,12 @@ jobs:
 
       - name: run tests
         run: uv run bash scripts/test.sh
+
+      - name: types
+        run: uv run mypy ./src/dkany/**/*.py
+
+      - name: fmt
+        run: uv run ruff check .
       
       - name: Upload all test artifacts
         uses: actions/upload-artifact@v4
