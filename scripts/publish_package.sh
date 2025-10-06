@@ -9,9 +9,9 @@ else
     echo "AWS_PROFILE=${aws_profile}"
 fi
 
-pipenv sync --dev
+uv sync --dev
 
-pipenv run python -m build 
+uv build
 
 AWS_PROFILE=$aws_profile aws --region=us-east-1 codeartifact login --tool twine \
     --domain shared-package-domain \
@@ -23,4 +23,4 @@ latest_distribution=$(ls dist/dkany-*.tar.gz | awk -F"-" '{print $NF, $0}' | sor
 
 echo "latest_distribution=${latest_distribution}"
 
-pipenv run python -m twine upload --repository codeartifact $latest_distribution --verbose
+uv run python -m twine upload --repository codeartifact $latest_distribution --verbose

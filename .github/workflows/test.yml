@@ -20,7 +20,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies with pipenv
+      - name: Install dependencies
         run: |
           pip install uv
           uv sync --dev

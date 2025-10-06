@@ -1,22 +1,16 @@
 # dkany
 Python package for accessing open data websites powered by dkan
 
+# `uv` and package management
+We're using [`uv`](https://docs.astral.sh/uv/), since pipenv was having a hard time building.  Install it with `pip install uv`, then it should work almost identically to `pipenv`
+
 # Local Development
 
 To install the package and it's dependences for development, run 
 ```
-pipenv install --dev
+uv sync --dev
 ```
-Pipenv may sometimes have difficulty finding the specific version of python on your system, so you'll have to point it to the version of python. It's possible to use pyenv-win to manage versions of python https://github.com/pyenv-win/pyenv-win
-```
-pyenv install -l 
-pyenv install 3.9.6
-```
-
-You can point pipenv to a specific python version manually by adding the --python option, for example 
-```
-pipenv install --dev --python C:/Users/pmariani/.pyenv/pyenv-win/versions/3.9.6/python.exe
-```
+`uv` can manage your python versions for you.  Try out `uv python list` or `uv python install 3.13`
 
 
 ## Environment Variables
