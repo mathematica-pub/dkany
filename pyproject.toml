@@ -8,11 +8,13 @@ path = "src/dkany/__about__.py"
 [project]
 dynamic = ["version"]
 name = "dkany"
-description = "dkany"
+description = "A wrapper library around the DKAN API"
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
 readme = "README.md"
-dependencies = [
-    "pandas", 
-    "requests", 
-    "requests-toolbelt", 
-    "pysftp", 
+authors = [
+  { name="Peter Mariani", email="pmariani@mathematica-mpr.com" },
+  { name="Drew McArthur", email="dmcarthur@mathematica-mpr.com" },
+  { name="Tom Coile", email="tcoile@mathematica-mpr.com" },
 ]
+requires-python = ">=3.9"
