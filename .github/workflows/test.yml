@@ -22,11 +22,11 @@ jobs:
 
       - name: Install dependencies with pipenv
         run: |
-          pip install pipenv 
-          pipenv install --dev
+          pip install uv
+          uv sync --dev
 
       - name: run tests
-        run: pipenv run bash scripts/test.sh
+        run: uv run bash scripts/test.sh
       
       - name: Upload all test artifacts
         uses: actions/upload-artifact@v4

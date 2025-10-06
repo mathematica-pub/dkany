@@ -1,5 +1,5 @@
 # ignore redefining from outer scope, false positive from fixtures
-# pylint: disable=W0621 
+# pylint: disable=W0621
 import pytest
 from dkany.client import DKANClient
 
