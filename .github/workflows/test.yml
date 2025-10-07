@@ -11,6 +11,9 @@ jobs:
     name: Require Version Bumps
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v5
+      - name: Fetch main branch
+        run: git fetch origin main
       - name: Check version changed
         run: |
           git fetch origin main~1 --depth=1
