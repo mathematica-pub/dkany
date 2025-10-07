@@ -12,8 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - name: Fetch main branch
-        run: git fetch origin main
+        with:
+          fetch-depth: 0  # Fetch all history for all branches and tags
       - name: Check version changed
         run: |
           git fetch origin main~1 --depth=1
