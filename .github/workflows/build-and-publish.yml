@@ -4,7 +4,7 @@ on:
   release:
     types: [released, edited]
   push:
-    branches: [main, auto-bump-version]
+    branches: [main]
 
 jobs:
   build:
@@ -23,7 +23,6 @@ jobs:
       run: |
         pip install uv
         uv sync --dev
-
     - name: Build a binary wheel and a source tarball
       run: uv build
     - name: Store the distribution packages
