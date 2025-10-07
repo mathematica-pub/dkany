@@ -21,7 +21,7 @@ jobs:
           echo "Old: $OLD_VERSION"
           echo "New: $NEW_VERSION"
           if [ "$OLD_VERSION" = "$NEW_VERSION" ]; then
-            echo "❌ Version not bumped. Please update __about__.py before publishing."
+            echo "❌ Version not bumped. Please run `uv run hatch version $NEW_VERSION` before publishing."
             exit 1
           fi
   Test:
