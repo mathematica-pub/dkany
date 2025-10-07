@@ -1,12 +1,29 @@
 name: Dkany - Pipeline
 
 on:
-  push:
-    branches: ["main"]
   pull_request:
     branches: ["main"]
 
 jobs:
+  check-version:
+    name: Require Version Bumps
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 2  # Fetch all history for all branches and tags
+      - name: Fetch main branch
+        run: git fetch origin main
+      - name: Check version changed
+        run: |
+          OLD_VERSION=$(git show origin/main:src/dkany/__about__.py | head -n1)
+          NEW_VERSION=$(cat src/dkany/__about__.py)
+          echo "Old: $OLD_VERSION"
+          echo "New: $NEW_VERSION"
+          if [ "$OLD_VERSION" = "$NEW_VERSION" ]; then
+            echo "❌ Version not bumped. Please run `uv run hatch version $NEW_VERSION` before publishing."
+            exit 1
+          fi
   Test:
     strategy:
       matrix:
