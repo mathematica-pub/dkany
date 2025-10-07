@@ -4,7 +4,7 @@ on:
   release:
     types: [released, edited]
   push:
-    branches: [main]
+    branches: [main, auto-bump-version]
 
 permissions:
   contents: write
@@ -33,7 +33,7 @@ jobs:
       run: |
         python - <<'EOF'
         import re, pathlib
-        about = pathlib.Path("src/your_package/__about__.py")
+        about = pathlib.Path("src/dkany/__about__.py")
         text = about.read_text()
 
         # find current version
