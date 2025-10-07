@@ -32,16 +32,27 @@ jobs:
       id: bump
       run: |
         python - <<'EOF'
-        import toml, re, pathlib
-        path = pathlib.Path("pyproject.toml")
-        data = toml.load(path)
-        version = data["project"]["version"]
-        major, minor, patch = map(int, re.match(r"(\d+)\.(\d+)\.(\d+)", version).groups())
+        import re, pathlib
+        about = pathlib.Path("src/your_package/__about__.py")
+        text = about.read_text()
+
+        # find current version
+        m = re.search(r'__version__\s*=\s*"(\d+)\.(\d+)\.(\d+)"', text)
+        if not m:
+            raise SystemExit("❌ Could not find version string in __about__.py")
+
+        major, minor, patch = map(int, m.groups())
         patch += 1
-        new_version = f"{major}.{minor}.{patch}"
-        data["project"]["version"] = new_version
-        path.write_text(toml.dumps(data))
-        print(f"Bumped version: {version} → {new_version}")
+        new_version = f'{major}.{minor}.{patch}'
+
+        new_text = re.sub(
+            r'(__version__\s*=\s*")\d+\.\d+\.\d+(")',
+            rf'\g<1>{new_version}\g<2>',
+            text,
+        )
+
+        about.write_text(new_text)
+        print(f"Bumped version: {m.group(0)} → __version__ = \"{new_version}\"")
         EOF
 
     - name: Commit version bump
