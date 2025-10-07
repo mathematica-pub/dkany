@@ -6,9 +6,6 @@ on:
   push:
     branches: [main, auto-bump-version]
 
-permissions:
-  contents: write
-
 jobs:
   build:
     name: Build distribution 📦
@@ -27,41 +24,6 @@ jobs:
         pip install uv
         uv sync --dev
 
-    
-    - name: Auto bump version
-      id: bump
-      run: |
-        python - <<'EOF'
-        import re, pathlib
-        about = pathlib.Path("src/dkany/__about__.py")
-        text = about.read_text()
-
-        # find current version
-        m = re.search(r'__version__\s*=\s*"(\d+)\.(\d+)\.(\d+)"', text)
-        if not m:
-            raise SystemExit("❌ Could not find version string in __about__.py")
-
-        major, minor, patch = map(int, m.groups())
-        patch += 1
-        new_version = f'{major}.{minor}.{patch}'
-
-        new_text = re.sub(
-            r'(__version__\s*=\s*")\d+\.\d+\.\d+(")',
-            rf'\g<1>{new_version}\g<2>',
-            text,
-        )
-
-        about.write_text(new_text)
-        print(f"Bumped version: {m.group(0)} → __version__ = \"{new_version}\"")
-        EOF
-
-    - name: Commit version bump
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git commit -am "ci: bump version"
-        git push
-    
     - name: Build a binary wheel and a source tarball
       run: uv build
     - name: Store the distribution packages
