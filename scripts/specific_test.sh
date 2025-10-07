@@ -1,6 +1,6 @@
 rm -rf test-reports/*
 
-pipenv run python -m pytest \
+uv run python -m pytest \
     --cov functions \
     --cov-report html:./test-reports/cov \
     --cov-report xml:./test-reports/cov.xml \

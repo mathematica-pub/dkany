@@ -1,10 +1,12 @@
 import logging
-import requests
-import json
-from requests_toolbelt import sessions
-from requests.cookies import RequestsCookieJar
-from datetime import datetime as dt
 from copy import deepcopy as copy
+from datetime import datetime as dt
+from typing import List, Optional
+
+import requests
+from requests.cookies import RequestsCookieJar
+from requests_toolbelt import sessions # type: ignore
+
 from dkany.client.errors import BadResponse
 
 logger = logging.getLogger(__name__)
@@ -14,15 +16,21 @@ def url_join(url_part_list):
     return "/".join(url_part_list)
 
 
-class DKANClient(object):
+class DKANClient:
     """
     docstring
     """
 
-    def __init__(self, base_url=None, cookie_dict=None, user_name=None, password=None):
+    def __init__(
+        self,
+        base_url: Optional[str] = None,
+        cookie_dict: Optional[dict] = None,
+        user_name: Optional[str] = None,
+        password: Optional[str] = None,
+    ):
         self.base_url = base_url
 
-        logger.info(f"Creating DKAN client for {self.base_url}")
+        logger.info("Creating DKAN client for %s", self.base_url)
 
         session = sessions.BaseUrlSession(self.base_url)
         if user_name is not None:
@@ -62,9 +70,12 @@ class DKANClient(object):
     def __str__(self) -> str:
         return f"DKAN client for {self.base_url} with user {self.user_name}"
 
-    def _process_response(self, response, acceptable_responses=[200, 201]):
+    def _process_response(
+        self, response, acceptable_responses: Optional[List[int]] = None
+    ):
+        acceptable_responses = acceptable_responses or [200, 201]
         if response.status_code not in acceptable_responses:
-            raise (BadResponse(response, acceptable_responses))
+            raise BadResponse(response, acceptable_responses)
         out = response.json()
         return out
 
@@ -92,7 +103,9 @@ class DKANClient(object):
 
         return all_results
 
-    def search(self, title=None, tags=None, categories=None, page="ALL"):
+    def search(
+        self, title: Optional[str] = None, tags=None, categories=None, page="ALL"
+    ):
         params = {}
         if title is not None:
             params["title"] = title
@@ -183,7 +196,7 @@ class DKANClient(object):
 
     def check_dataset_exists(self, dataset_identifier):
         try:
-            dataset_metadata = self.get_dataset_metadata(dataset_identifier)
+            _ = self.get_dataset_metadata(dataset_identifier)
             return True
         except BadResponse:
             return False

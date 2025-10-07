@@ -1,4 +1,4 @@
-PACKAGE_VERSION=$(pipenv run python -m hatch version)
+PACKAGE_VERSION=$(uv run python -m hatch version)
 version_tag="v${PACKAGE_VERSION}"
 echo "Tagging "$PACKAGE_VERSION
 # git tag $version_tag

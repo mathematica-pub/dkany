@@ -1,1 +1,1 @@
-from .client import DKANClient
+from .client import DKANClient as DKANClient
