@@ -44,3 +44,10 @@ class SftpClient:
             raise SystemError(
                 f"Could not change to base_path {default_remote_path or '/'}"
             ) from e
+
+    def exists(self, path: str) -> bool:
+        try:
+            self.connection.stat(path)
+            return True
+        except FileNotFoundError:
+            return False
