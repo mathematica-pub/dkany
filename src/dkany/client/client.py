@@ -1,7 +1,7 @@
 import logging
 from copy import deepcopy as copy
 from datetime import datetime as dt
-from typing import List, Optional
+from typing import List, Optional, Dict
 
 import requests
 from requests.cookies import RequestsCookieJar
@@ -18,13 +18,19 @@ def url_join(url_part_list):
 
 class DKANClient:
     """
-    docstring
+    The main interface with the DKAN API.
+
+    Arguments:
+        base_url: The base URL of the DKAN instance.
+        cookie_dict: A dictionary of cookies to attach to requests
+        user_name: The CMS Username (Four characters)
+        password: The DKAN API key associated with the user_name
     """
 
     def __init__(
         self,
         base_url: Optional[str] = None,
-        cookie_dict: Optional[dict] = None,
+        cookie_dict: Optional[Dict[str,str]] = None,
         user_name: Optional[str] = None,
         password: Optional[str] = None,
     ):
