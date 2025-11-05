@@ -1,5 +1,10 @@
+from typing import List
+from requests.models import Response
+
+
 class Error(Exception):
     """Base class for exceptions in this module."""
+
     message: str
 
     def __str__(self):
@@ -10,12 +15,10 @@ class Error(Exception):
 
 
 class BadResponse(Error):
-    def __init__(self, response, acceptable_status_codes):
+    def __init__(self, response: Response, acceptable_status_codes: List[int]):
         status_code = response.status_code
         message = []
-        message.append(
-            "Status code returned not in acceptable status codes for this response"
-        )
+        message.append("Status code returned not in acceptable status codes for this response")
         message.append(
             f"Returned: {status_code}:{response.reason}, Acceptable Codes {acceptable_status_codes}"
         )
