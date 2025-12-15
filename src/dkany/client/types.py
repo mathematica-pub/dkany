@@ -4,7 +4,9 @@ https://data.medicaid.gov/about/api
 """
 
 from typing import Literal
-from typing import List, TypedDict, NotRequired, Dict
+
+from typing import List, TypedDict, Dict
+from typing_extensions import NotRequired
 
 
 class DkanSearchParams(TypedDict):
