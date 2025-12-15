@@ -1,13 +1,24 @@
 import logging
 from copy import deepcopy as copy
 from datetime import datetime as dt
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 import requests
 from requests.cookies import RequestsCookieJar
-from requests_toolbelt import sessions # type: ignore
+from requests.models import Response
+from requests_toolbelt import sessions  # type: ignore
 
 from dkany.client.errors import BadResponse
+from dkany.client.types import (
+    DkanSearchResponse,
+    DkanSearchParams,
+    DkanDatasetMetadataResponse,
+    DkanCreateDatasetResponse,
+    DkanUpdateDatasetResponse,
+    DkanDeleteDatasetResponse,
+    DkanGetDatasetResponse,
+    DkanMetadataFilterParams,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -18,13 +29,19 @@ def url_join(url_part_list):
 
 class DKANClient:
     """
-    docstring
+    The main interface with the DKAN API.
+
+    Arguments:
+        base_url: The base URL of the DKAN instance.
+        cookie_dict: A dictionary of cookies to attach to requests
+        user_name: The CMS Username (Four characters)
+        password: The DKAN API key associated with the user_name
     """
 
     def __init__(
         self,
         base_url: Optional[str] = None,
-        cookie_dict: Optional[dict] = None,
+        cookie_dict: Optional[Dict[str, str]] = None,
         user_name: Optional[str] = None,
         password: Optional[str] = None,
     ):
@@ -51,7 +68,9 @@ class DKANClient:
         self.existing_dataset_url = (
             "api/1/metastore/schemas/dataset/items/{dataset_identifier}?_format=json"
         )
-        self.revise_dataset_url = "api/1/metastore/schemas/dataset/items/{dataset_identifier}/revisions?_format=json"
+        self.revise_dataset_url = (
+            "api/1/metastore/schemas/dataset/items/{dataset_identifier}/revisions?_format=json"
+        )
         self.query_datastore_url = (
             "api/1/datastore/query/{dataset_identifier}/{datastore_idx}?_format=json"
         )
@@ -71,7 +90,7 @@ class DKANClient:
         return f"DKAN client for {self.base_url} with user {self.user_name}"
 
     def _process_response(
-        self, response, acceptable_responses: Optional[List[int]] = None
+        self, response: Response, acceptable_responses: Optional[List[int]] = None
     ):
         acceptable_responses = acceptable_responses or [200, 201]
         if response.status_code not in acceptable_responses:
@@ -79,14 +98,21 @@ class DKANClient:
         out = response.json()
         return out
 
-    def _paged_search(self, params, page):
+    def _paged_search(self, params: DkanSearchParams, page) -> DkanSearchResponse:
         params["page"] = page
 
         response = self.session.get(self.search_url, params=params)
+        json = self._process_response(response)
+        if any(k not in json for k in ("total", "results", "facets")):
+            err = (
+                "Malformed search response received from DKAN instance.  "
+                + "Expected keys 'total', 'results', and 'facets' got: "
+                + ", ".join(json.keys())
+            )
+            raise SystemError(err)
+        return json
 
-        return self._process_response(response)
-
-    def _search_all_pages(self, params):
+    def _search_all_pages(self, params: DkanSearchParams) -> Dict[str, DkanDatasetMetadataResponse]:
         page = 1
         out = self._paged_search(params, page)
         total = int(out["total"])
@@ -105,10 +131,10 @@ class DKANClient:
 
     def search(
         self, title: Optional[str] = None, tags=None, categories=None, page="ALL"
-    ):
-        params = {}
+    ) -> Dict[str, DkanDatasetMetadataResponse]:
+        params = DkanSearchParams()
         if title is not None:
-            params["title"] = title
+            params["fulltext"] = title  # todo: is this what's intended by this param?
         if tags is not None:
             params["keyword"] = tags
         if categories is not None:
@@ -128,7 +154,11 @@ class DKANClient:
 
         return out
 
-    def filter_search_results(self, search_results, filter_params):
+    def filter_search_results(
+        self,
+        search_results: Dict[str, DkanDatasetMetadataResponse],
+        filter_params: Optional[DkanMetadataFilterParams],
+    ) -> Dict[str, DkanDatasetMetadataResponse]:
         if filter_params is None:
             return search_results
         if len(filter_params.keys()) == 0:
@@ -138,30 +168,34 @@ class DKANClient:
 
         for search_key, search_result_value in inital_search_results:
             for filter_key, filter_value in filter_params.items():
-                if search_result_value[filter_key] != filter_value:
+                if search_result_value[filter_key] != filter_value:  # type: ignore # mypy issue with TypedDict optional keys
                     search_results.pop(search_key)
                     break
 
         return search_results
 
-    def create_dataset(self, body):
+    def create_dataset(self, body: Dict[str, Any]) -> DkanCreateDatasetResponse:
         response = self.session.post(self.post_new_dataset_url, json=body)
         return self._process_response(response)
 
-    def delete_dataset(self, dataset_identifier):
+    def delete_dataset(self, dataset_identifier: str) -> DkanDeleteDatasetResponse:
         response = self.session.delete(
             self.existing_dataset_url.format(dataset_identifier=dataset_identifier)
         )
         return self._process_response(response)
 
-    def update_dataset(self, dataset_identifier, body):
+    def update_dataset(
+        self, dataset_identifier: str, body: DkanDatasetMetadataResponse
+    ) -> DkanUpdateDatasetResponse:
         response = self.session.put(
             self.existing_dataset_url.format(dataset_identifier=dataset_identifier),
             json=body,
         )
         return self._process_response(response)
 
-    def mark_dataset_hidden(self, dataset_identifier, message=""):
+    def mark_dataset_hidden(
+        self, dataset_identifier: str, message: str = ""
+    ) -> DkanUpdateDatasetResponse:
         """
         Sets dataset accesslevel to "hidden"
         Hides dataset from searches made on data.medicare.gov user interface
@@ -174,7 +208,7 @@ class DKANClient:
         )
         return self._process_response(response)
 
-    def mark_dataset_public(self, dataset_identifier, message=""):
+    def mark_dataset_public(self, dataset_identifier: str, message="") -> DkanCreateDatasetResponse:
         """
         Sets dataset accesslevel to "published"
         Makes a dataset searchable through data.medicare.gov user interface
@@ -187,21 +221,21 @@ class DKANClient:
         )
         return self._process_response(response)
 
-    def get_dataset_metadata(self, dataset_identifier):
+    def get_dataset_metadata(self, dataset_identifier: str) -> DkanDatasetMetadataResponse:
         response = self.session.get(
             self.existing_dataset_url.format(dataset_identifier=dataset_identifier),
             params={"_format": "json"},
         )
         return self._process_response(response)
 
-    def check_dataset_exists(self, dataset_identifier):
+    def check_dataset_exists(self, dataset_identifier) -> bool:
         try:
             _ = self.get_dataset_metadata(dataset_identifier)
             return True
         except BadResponse:
             return False
 
-    def trigger_dataset_reimport(self, dataset_identifier):
+    def trigger_dataset_reimport(self, dataset_identifier) -> DkanUpdateDatasetResponse:
         body = self.get_dataset_metadata(dataset_identifier)
         body["modified"] = dt.now().strftime(self.dkan_time_format)
         return self.update_dataset(dataset_identifier, body)
@@ -216,7 +250,9 @@ class DKANClient:
             ]
         )
 
-    def get_data_by_dataset_identifier(self, dataset_identifier, datastore_idx=0):
+    def get_data_by_dataset_identifier(
+        self, dataset_identifier, datastore_idx=0
+    ) -> DkanGetDatasetResponse:
         response = self.session.get(
             self.query_datastore_url.format(
                 dataset_identifier=dataset_identifier, datastore_idx=datastore_idx
